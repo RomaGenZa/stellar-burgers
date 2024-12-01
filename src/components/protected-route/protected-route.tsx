@@ -9,6 +9,7 @@ type ProtectedRouteProps = {
 };
 
 export const ProtectedRoute: FC<ProtectedRouteProps> = ({
+  onlyUnAuth,
   children
 }: ProtectedRouteProps) => {
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
@@ -16,6 +17,10 @@ export const ProtectedRoute: FC<ProtectedRouteProps> = ({
 
   if (isAuthenticating) {
     return <Preloader />;
+  }
+
+  if (onlyUnAuth && !isLoggedIn) {
+    return children;
   }
 
   if (!isLoggedIn) {
