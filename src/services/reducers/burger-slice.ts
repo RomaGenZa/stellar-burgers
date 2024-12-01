@@ -35,12 +35,10 @@ export const burgerSlice = createSlice({
 });
 
 export const fetchIngredients = createAsyncThunk(
-  'burger/fetchIngredients',
+  'burger/fetch_ingredients',
   async (_, thunkApi) => {
     try {
-      const data = await getIngredientsApi();
-      console.log(data);
-      return data;
+      return await getIngredientsApi();
     } catch (e) {
       return thunkApi.rejectWithValue(e);
     }
