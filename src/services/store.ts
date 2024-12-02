@@ -7,12 +7,12 @@ import {
 } from 'react-redux';
 import { burgerSlice } from './reducers/burger-slice';
 import { feedSlice } from './reducers/feed-slice';
-import { loginSlice } from './reducers/login-slice';
+import { userSlice } from './reducers/user-slice';
 
 const rootReducer = combineReducers({
   burger: burgerSlice.reducer,
   feed: feedSlice.reducer,
-  user: loginSlice.reducer
+  user: userSlice.reducer
 });
 
 const store = configureStore({
