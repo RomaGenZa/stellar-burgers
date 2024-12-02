@@ -15,13 +15,17 @@ interface UserState {
   isAuthenticating: boolean;
   user: TUser | null;
   orders: TOrder[];
+  loginError: string;
+  updateUserError: string;
 }
 
 const userString = localStorage.getItem('user');
 const initialState: UserState = {
   isAuthenticating: false,
   user: userString ? JSON.parse(userString) : null,
-  orders: []
+  orders: [],
+  loginError: '',
+  updateUserError: ''
 };
 
 export const userSlice = createSlice({
@@ -38,14 +42,12 @@ export const userSlice = createSlice({
       (state, action: PayloadAction<TUser>) => {
         state.isAuthenticating = false;
         state.user = action.payload;
-        localStorage.setItem('user', JSON.stringify(state.user));
       }
     );
 
     builder.addCase(register.rejected, (state) => {
       state.isAuthenticating = false;
       state.user = null;
-      localStorage.removeItem('user');
     });
 
     builder.addCase(logout.pending, (state) => {
@@ -55,17 +57,16 @@ export const userSlice = createSlice({
     builder.addCase(logout.fulfilled, (state) => {
       state.isAuthenticating = false;
       state.user = null;
-      localStorage.removeItem('user');
     });
 
     builder.addCase(logout.rejected, (state) => {
       state.isAuthenticating = false;
       state.user = null;
-      localStorage.removeItem('user');
     });
 
     builder.addCase(login.pending, (state) => {
       state.isAuthenticating = true;
+      state.loginError = '';
     });
 
     builder.addCase(login.fulfilled, (state, action: PayloadAction<TUser>) => {
@@ -73,9 +74,10 @@ export const userSlice = createSlice({
       state.user = action.payload;
     });
 
-    builder.addCase(login.rejected, (state) => {
+    builder.addCase(login.rejected, (state, action) => {
       state.isAuthenticating = false;
       state.user = null;
+      state.loginError = (action.payload as Error).message;
     });
 
     builder.addCase(getUser.pending, (state) => {
@@ -93,6 +95,7 @@ export const userSlice = createSlice({
 
     builder.addCase(updateUser.pending, (state) => {
       state.isAuthenticating = true;
+      state.updateUserError = '';
     });
 
     builder.addCase(updateUser.fulfilled, (state, action) => {
@@ -100,8 +103,9 @@ export const userSlice = createSlice({
       state.user = action.payload;
     });
 
-    builder.addCase(updateUser.rejected, (state) => {
+    builder.addCase(updateUser.rejected, (state, action) => {
       state.isAuthenticating = false;
+      state.updateUserError = (action.payload as Error).message;
     });
 
     builder.addCase(getOrders.fulfilled, (state, action) => {
@@ -156,7 +160,7 @@ export const getUser = createAsyncThunk(
 
 export const updateUser = createAsyncThunk(
   'user/update-user',
-  async (data: Partial<TUser>, thunkApi) => {
+  async (data: Partial<TUser & { password: string }>, thunkApi) => {
     try {
       const response = await updateUserApi(data);
       return response.user;
