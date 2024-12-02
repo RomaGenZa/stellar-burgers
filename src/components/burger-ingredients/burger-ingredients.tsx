@@ -7,10 +7,8 @@ import { useDispatch, useSelector } from '../../services/store';
 import { fetchIngredients } from '../../services/reducers/burger-slice';
 
 export const BurgerIngredients: FC = () => {
-  /** TODO: взять переменные из стора */
   const { ingredients } = useSelector((state) => state.burger);
 
-  console.log('Ingredients: ' + ingredients);
   const buns: TIngredient[] = ingredients.filter((i) => i.type === 'bun');
   const mains: TIngredient[] = ingredients.filter((i) => i.type === 'main');
   const sauces: TIngredient[] = ingredients.filter((i) => i.type === 'sauce');

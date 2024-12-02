@@ -13,74 +13,92 @@ import '../../index.css';
 import styles from './app.module.css';
 
 import { AppHeader } from '@components';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { ProtectedRoute } from '../protected-route';
+import { useEffect } from 'react';
+import { getUser } from '../../services/reducers/user-slice';
+import { useDispatch, useSelector } from '../../services/store';
+import { fetchFeed } from '../../services/reducers/feed-slice';
 
-const App = () => (
-  <div className={styles.app}>
-    <AppHeader />
-    <Routes>
-      <Route path='/' element={<ConstructorPage />} index />
+const App = () => {
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector((state) => state.user.user != null);
+  const navigation = useNavigate();
 
-      <Route path='/feed' element={<Feed />} />
+  useEffect(() => {
+    dispatch(getUser());
+  }, []);
 
-      <Route
-        path='/login'
-        element={
-          <ProtectedRoute onlyUnAuth>
-            <Login />
-          </ProtectedRoute>
-        }
-      />
+  useEffect(() => {
+    navigation('/');
+  }, [isAuthenticated]);
 
-      <Route
-        path='/register'
-        element={
-          <ProtectedRoute onlyUnAuth>
-            <Register />
-          </ProtectedRoute>
-        }
-      />
+  return (
+    <div className={styles.app}>
+      <AppHeader />
+      <Routes>
+        <Route path='/' element={<ConstructorPage />} index />
 
-      <Route
-        path='/forgot-password'
-        element={
-          <ProtectedRoute onlyUnAuth>
-            <ForgotPassword />
-          </ProtectedRoute>
-        }
-      />
+        <Route path='/feed' element={<Feed />} />
 
-      <Route
-        path='/reset-password'
-        element={
-          <ProtectedRoute onlyUnAuth>
-            <ResetPassword />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path='/login'
+          element={
+            <ProtectedRoute onlyUnAuth>
+              <Login />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path='/profile'
-        element={
-          <ProtectedRoute>
-            <Profile />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path='/register'
+          element={
+            <ProtectedRoute onlyUnAuth>
+              <Register />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path='/profile/orders'
-        element={
-          <ProtectedRoute>
-            <ProfileOrders />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path='/forgot-password'
+          element={
+            <ProtectedRoute onlyUnAuth>
+              <ForgotPassword />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route path='*' element={<NotFound404 />} />
-    </Routes>
-  </div>
-);
+        <Route
+          path='/reset-password'
+          element={
+            <ProtectedRoute onlyUnAuth>
+              <ResetPassword />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path='/profile'
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path='/profile/orders'
+          element={
+            <ProtectedRoute>
+              <ProfileOrders />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path='*' element={<NotFound404 />} />
+      </Routes>
+    </div>
+  );
+};
 
 export default App;

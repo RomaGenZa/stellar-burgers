@@ -12,18 +12,18 @@ export const ProtectedRoute: FC<ProtectedRouteProps> = ({
   onlyUnAuth,
   children
 }: ProtectedRouteProps) => {
-  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+  const user = useSelector((state) => state.user.user);
   const isAuthenticating = useSelector((state) => state.user.isAuthenticating);
 
   if (isAuthenticating) {
     return <Preloader />;
   }
 
-  if (onlyUnAuth && !isLoggedIn) {
+  if (onlyUnAuth && !user) {
     return children;
   }
 
-  if (!isLoggedIn) {
+  if (!user) {
     return <Navigate replace to='/login' />;
   }
 
