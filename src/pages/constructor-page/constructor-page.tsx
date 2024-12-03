@@ -9,13 +9,7 @@ import { FC, useEffect } from 'react';
 import { fetchIngredients } from '../../services/reducers/burger-slice';
 
 export const ConstructorPage: FC = () => {
-  /** TODO: взять переменную из стора */
   const { isIngredientsLoading } = useSelector((state) => state.burger);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(fetchIngredients());
-  }, []);
 
   return (
     <>

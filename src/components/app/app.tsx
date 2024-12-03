@@ -19,6 +19,7 @@ import { useEffect } from 'react';
 import { getUser } from '../../services/reducers/user-slice';
 import { useDispatch, useSelector } from '../../services/store';
 import { fetchFeed } from '../../services/reducers/feed-slice';
+import { fetchIngredients } from '../../services/reducers/burger-slice';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -27,6 +28,8 @@ const App = () => {
 
   useEffect(() => {
     dispatch(getUser());
+    dispatch(fetchIngredients());
+    dispatch(fetchFeed());
   }, []);
 
   useEffect(() => {
