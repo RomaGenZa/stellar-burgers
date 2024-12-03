@@ -26,7 +26,7 @@ import {
 
 const App = () => {
   const dispatch = useDispatch();
-  const isAuthenticated = useSelector((state) => state.user.user != null);
+  const isAuthenticated = useSelector((state) => state.user.user !== null);
   const navigation = useNavigate();
 
   useEffect(() => {
