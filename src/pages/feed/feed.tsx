@@ -14,10 +14,6 @@ export const Feed: FC = () => {
     return <Preloader />;
   }
 
-  if (!orders.length) {
-    return <h1 style={{ textAlign: 'center' }}>Свободная касса!</h1>;
-  }
-
   return (
     <FeedUI orders={orders} handleGetFeeds={() => dispatch(fetchFeed())} />
   );
