@@ -1,12 +1,14 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getIngredientsApi } from '@api';
-import { TBurgerConstructor, TIngredient } from '@utils-types';
+import { getIngredientsApi, getOrderByNumberApi, orderBurgerApi } from '@api';
+import { TBurgerConstructor, TIngredient, TOrder } from '@utils-types';
 
 interface BurgerState {
   isIngredientsLoading: boolean;
   ingredients: TIngredient[];
   burgerConstructor: TBurgerConstructor;
   ingredientsData: TIngredient | null;
+  orderRequest: boolean;
+  orderModalData: TOrder | null;
 }
 
 const initialState: BurgerState = {
@@ -15,7 +17,9 @@ const initialState: BurgerState = {
   burgerConstructor: {
     ingredients: []
   },
-  ingredientsData: null
+  ingredientsData: null,
+  orderRequest: false,
+  orderModalData: null
 };
 
 export const burgerSlice = createSlice({
@@ -63,6 +67,9 @@ export const burgerSlice = createSlice({
         (ingredient) => ingredient._id === id
       );
       state.ingredientsData = ingredient ?? null;
+    },
+    clearOrderData(state) {
+      state.orderModalData = null;
     }
   },
   extraReducers: (builder) => {
@@ -80,6 +87,32 @@ export const burgerSlice = createSlice({
       state.isIngredientsLoading = false;
       state.ingredients = [];
     });
+    builder.addCase(orderBurger.pending, (state) => {
+      state.orderRequest = true;
+    });
+    builder.addCase(orderBurger.fulfilled, (state, action) => {
+      state.orderRequest = false;
+      state.orderModalData = action.payload.order;
+    });
+    builder.addCase(orderBurger.rejected, (state) => {
+      state.orderRequest = false;
+    });
+    builder.addCase(getOrderByNumber.rejected, (state) => {
+      state.orderRequest = false;
+    });
+    builder.addCase(getOrderByNumber.fulfilled, (state, action) => {
+      state.orderRequest = false;
+      const orders = action.payload.orders;
+      if (orders.length > 0) {
+        state.orderModalData = action.payload.orders[0];
+      } else {
+        state.orderModalData = null;
+      }
+    });
+    builder.addCase(getOrderByNumber.pending, (state) => {
+      state.orderRequest = true;
+      state.orderModalData = null;
+    });
   }
 });
 
@@ -90,6 +123,28 @@ export const fetchIngredients = createAsyncThunk(
       return await getIngredientsApi();
     } catch (e) {
       return thunkApi.rejectWithValue(e);
+    }
+  }
+);
+
+export const orderBurger = createAsyncThunk(
+  'burger/order_burger',
+  async (data: string[], thunkApi) => {
+    try {
+      return await orderBurgerApi(data);
+    } catch (e) {
+      return thunkApi.rejectWithValue(e);
+    }
+  }
+);
+
+export const getOrderByNumber = createAsyncThunk(
+  'burger/get_order_burger',
+  async (data: number, thunkAPI) => {
+    try {
+      return await getOrderByNumberApi(data);
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e);
     }
   }
 );
