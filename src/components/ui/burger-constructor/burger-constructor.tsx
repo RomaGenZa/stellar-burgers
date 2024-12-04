@@ -11,13 +11,13 @@ import { BurgerConstructorElement, Modal } from '@components';
 import { Preloader, OrderDetailsUI } from '@ui';
 
 export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
-                                                                    constructorItems,
-                                                                    orderRequest,
-                                                                    price,
-                                                                    orderModalData,
-                                                                    onOrderClick,
-                                                                    closeOrderModal
-                                                                  }) => (
+  constructorItems,
+  orderRequest,
+  price,
+  orderModalData,
+  onOrderClick,
+  closeOrderModal
+}) => (
   <section className={styles.burger_constructor}>
     {constructorItems.bun ? (
       <div className={`${styles.element} mb-4 mr-4`}>
