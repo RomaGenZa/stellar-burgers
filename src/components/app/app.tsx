@@ -12,14 +12,17 @@ import {
 import '../../index.css';
 import styles from './app.module.css';
 
-import { AppHeader } from '@components';
+import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { ProtectedRoute } from '../protected-route';
 import { useEffect } from 'react';
 import { getUser } from '../../services/reducers/user-slice';
 import { useDispatch, useSelector } from '../../services/store';
 import { fetchFeed } from '../../services/reducers/feed-slice';
-import { fetchIngredients } from '../../services/reducers/burger-slice';
+import {
+  burgerSlice,
+  fetchIngredients
+} from '../../services/reducers/burger-slice';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -94,6 +97,51 @@ const App = () => {
           element={
             <ProtectedRoute>
               <ProfileOrders />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path='/feed/:number'
+          element={
+            <Modal
+              title={''}
+              onClose={() => {
+                navigation(-1);
+              }}
+            >
+              <OrderInfo />
+            </Modal>
+          }
+        />
+
+        <Route
+          path='/ingredients/:id'
+          element={
+            <Modal
+              title='Детали ингридиента'
+              onClose={() => {
+                dispatch(burgerSlice.actions.clearIngredientsState());
+                navigation(-1);
+              }}
+            >
+              <IngredientDetails />
+            </Modal>
+          }
+        />
+
+        <Route
+          path='/profile/orders/:number'
+          element={
+            <ProtectedRoute>
+              <Modal
+                title=''
+                onClose={() => {
+                  navigation(-1);
+                }}
+              >
+                <OrderInfo />
+              </Modal>
             </ProtectedRoute>
           }
         />
