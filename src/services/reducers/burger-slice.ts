@@ -1,6 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { getIngredientsApi, getOrderByNumberApi, orderBurgerApi } from '@api';
-import { TBurgerConstructor, TIngredient, TOrder } from '@utils-types';
+import {
+  TBurgerConstructor,
+  TConstructorIngredient,
+  TIngredient,
+  TOrder
+} from '@utils-types';
+import { v4 as uuidv4 } from 'uuid';
 
 interface BurgerState {
   isIngredientsLoading: boolean;
@@ -26,37 +32,62 @@ export const burgerSlice = createSlice({
   name: 'burger',
   initialState,
   reducers: {
-    addIngredient(state, action: PayloadAction<TIngredient>) {
-      const ingredient = action.payload;
-      if (ingredient.type === 'bun') {
-        state.burgerConstructor.bun = ingredient;
-      } else {
-        state.burgerConstructor.ingredients.push(ingredient);
+    addIngredient: {
+      prepare: (ingredient: TIngredient) => ({
+        payload: {
+          id: uuidv4(),
+          ...ingredient
+        }
+      }),
+      reducer: (state, action: PayloadAction<TConstructorIngredient>) => {
+        const ingredient = action.payload;
+        if (ingredient.type === 'bun') {
+          state.burgerConstructor.bun = ingredient;
+        } else {
+          state.burgerConstructor.ingredients.push(ingredient);
+        }
       }
     },
-    removeIngredient(state, action: PayloadAction<number>) {
-      const index = action.payload;
-      if (index > -1 && index < state.burgerConstructor.ingredients.length) {
+    removeIngredient(state, action: PayloadAction<string>) {
+      const id = action.payload;
+      const index = state.burgerConstructor.ingredients.findIndex(
+        (item) => id === item.id
+      );
+
+      if (index > -1) {
         state.burgerConstructor.ingredients.splice(index, 1);
       }
     },
-    moveUpIngredient(state, action: PayloadAction<number>) {
-      const index = action.payload;
+    moveUpIngredient(state, action: PayloadAction<string>) {
+      const id = action.payload;
+      const index = state.burgerConstructor.ingredients.findIndex(
+        (item) => id === item.id
+      );
       const ingredients = state.burgerConstructor.ingredients;
 
-      [ingredients[index], ingredients[index - 1]] = [
-        ingredients[index - 1],
-        ingredients[index]
-      ];
+      if (index > 0) {
+        [ingredients[index], ingredients[index - 1]] = [
+          ingredients[index - 1],
+          ingredients[index]
+        ];
+      }
     },
-    moveDownIngredient(state, action: PayloadAction<number>) {
-      const index = action.payload;
+    moveDownIngredient(state, action: PayloadAction<string>) {
+      const id = action.payload;
+      const index = state.burgerConstructor.ingredients.findIndex(
+        (item) => id === item.id
+      );
       const ingredients = state.burgerConstructor.ingredients;
 
-      [ingredients[index], ingredients[index + 1]] = [
-        ingredients[index + 1],
-        ingredients[index]
-      ];
+      if (
+        index > -1 &&
+        index < state.burgerConstructor.ingredients.length - 1
+      ) {
+        [ingredients[index], ingredients[index + 1]] = [
+          ingredients[index + 1],
+          ingredients[index]
+        ];
+      }
     },
     clearIngredientsState(state) {
       state.ingredientsData = null;
