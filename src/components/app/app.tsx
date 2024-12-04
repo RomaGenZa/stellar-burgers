@@ -17,7 +17,7 @@ import { Route, Routes, useNavigate } from 'react-router-dom';
 import { ProtectedRoute } from '../protected-route';
 import { useEffect } from 'react';
 import { getUser } from '../../services/reducers/user-slice';
-import { useDispatch, useSelector } from '../../services/store';
+import { useDispatch } from '../../services/store';
 import { fetchFeed } from '../../services/reducers/feed-slice';
 import {
   burgerSlice,
@@ -26,7 +26,6 @@ import {
 
 const App = () => {
   const dispatch = useDispatch();
-  const isAuthenticated = useSelector((state) => state.user.user !== null);
   const navigation = useNavigate();
 
   useEffect(() => {
@@ -34,10 +33,6 @@ const App = () => {
     dispatch(fetchIngredients());
     dispatch(fetchFeed());
   }, []);
-
-  useEffect(() => {
-    navigation('/');
-  }, [isAuthenticated]);
 
   return (
     <div className={styles.app}>
