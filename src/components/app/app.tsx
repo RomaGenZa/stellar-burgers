@@ -102,6 +102,7 @@ const App = () => {
             <Modal
               title={''}
               onClose={() => {
+                dispatch(burgerSlice.actions.clearOrderData());
                 navigation('/feed');
               }}
             >
@@ -132,6 +133,7 @@ const App = () => {
               <Modal
                 title=''
                 onClose={() => {
+                  dispatch(burgerSlice.actions.clearOrderData());
                   navigation('/profile/orders');
                 }}
               >

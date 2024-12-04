@@ -124,6 +124,7 @@ export const burgerSlice = createSlice({
     builder.addCase(orderBurger.fulfilled, (state, action) => {
       state.orderRequest = false;
       state.orderModalData = action.payload.order;
+      state.burgerConstructor = initialState.burgerConstructor;
     });
     builder.addCase(orderBurger.rejected, (state) => {
       state.orderRequest = false;
