@@ -102,7 +102,7 @@ const App = () => {
             <Modal
               title={''}
               onClose={() => {
-                navigation(-1);
+                navigation('/feed');
               }}
             >
               <OrderInfo />
@@ -117,7 +117,7 @@ const App = () => {
               title='Детали ингридиента'
               onClose={() => {
                 dispatch(burgerSlice.actions.clearIngredientsState());
-                navigation(-1);
+                navigation('/');
               }}
             >
               <IngredientDetails />
@@ -132,7 +132,7 @@ const App = () => {
               <Modal
                 title=''
                 onClose={() => {
-                  navigation(-1);
+                  navigation('/profile/orders');
                 }}
               >
                 <OrderInfo />
