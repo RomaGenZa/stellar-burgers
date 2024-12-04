@@ -6,6 +6,7 @@ interface BurgerState {
   isIngredientsLoading: boolean;
   ingredients: TIngredient[];
   burgerConstructor: TBurgerConstructor;
+  ingredientsData: TIngredient | null;
 }
 
 const initialState: BurgerState = {
@@ -13,7 +14,8 @@ const initialState: BurgerState = {
   ingredients: [],
   burgerConstructor: {
     ingredients: []
-  }
+  },
+  ingredientsData: null
 };
 
 export const burgerSlice = createSlice({
@@ -51,6 +53,16 @@ export const burgerSlice = createSlice({
         ingredients[index + 1],
         ingredients[index]
       ];
+    },
+    clearIngredientsState(state) {
+      state.ingredientsData = null;
+    },
+    updateIngredientsData(state, action: PayloadAction<string>) {
+      const id = action.payload;
+      const ingredient = state.ingredients.find(
+        (ingredient) => ingredient._id === id
+      );
+      state.ingredientsData = ingredient ?? null;
     }
   },
   extraReducers: (builder) => {

@@ -30,7 +30,7 @@ export const feedSlice = createSlice({
       state.totalToday = action.payload.totalToday;
       state.orders = action.payload.orders;
     });
-    builder.addCase(fetchFeed.rejected, (state, action) => {
+    builder.addCase(fetchFeed.rejected, (state) => {
       state.isLoading = false;
     });
   }
