@@ -29,8 +29,8 @@ const App = () => {
   const navigation = useNavigate();
 
   useEffect(() => {
-    dispatch(getUser());
     dispatch(fetchIngredients());
+    dispatch(getUser());
     dispatch(fetchFeed());
   }, []);
 
