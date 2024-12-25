@@ -17,7 +17,7 @@ interface BurgerState {
   orderModalData: TOrder | null;
 }
 
-const initialState: BurgerState = {
+export const initialState: BurgerState = {
   isIngredientsLoading: false,
   ingredients: [],
   burgerConstructor: {

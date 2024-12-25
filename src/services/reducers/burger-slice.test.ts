@@ -1,0 +1,70 @@
+import { burgerSlice, initialState } from './burger-slice';
+import { TConstructorIngredient } from '@utils-types';
+
+describe('Тестирование burgerSlice', () => {
+  const mockIngredient1: TConstructorIngredient = {
+    id: '643d69a5c3f7b9001cfa093e',
+    _id: '643d69a5c3f7b9001cfa093e',
+    name: 'Филе Люминесцентного тетраодонтимформа',
+    type: 'main'
+  } as TConstructorIngredient;
+
+  const mockIngredient2: TConstructorIngredient = {
+    id: '643d69a5c3f7b9001cfa0941',
+    _id: '643d69a5c3f7b9001cfa0941',
+    name: 'Биокотлета из марсианской Магнолии',
+    type: 'main'
+  } as TConstructorIngredient;
+
+  test('Тестирование экшена добавления ингредиента', () => {
+    const action = burgerSlice.actions.addIngredient(mockIngredient1);
+    const state = burgerSlice.reducer(initialState, action);
+
+    expect(state.burgerConstructor.ingredients).toHaveLength(1);
+    expect(state.burgerConstructor.ingredients[0]).toEqual(mockIngredient1);
+  });
+
+  test('Тестирование экшена удаления ингредиента', () => {
+    const initialStateWithIngredient = {
+      ...initialState,
+      burgerConstructor: {
+        ingredients: [mockIngredient1]
+      }
+    };
+
+    const action = burgerSlice.actions.removeIngredient(mockIngredient1.id);
+    const state = burgerSlice.reducer(initialStateWithIngredient, action);
+
+    expect(state.burgerConstructor.ingredients).toHaveLength(0);
+  });
+
+  test('Тестирование экшена перемещения ингредиента вверх', () => {
+    const initialStateWithIngredient = {
+      ...initialState,
+      burgerConstructor: {
+        ingredients: [mockIngredient1, mockIngredient2]
+      }
+    };
+
+    const action = burgerSlice.actions.moveUpIngredient(mockIngredient2.id);
+    const state = burgerSlice.reducer(initialStateWithIngredient, action);
+
+    expect(state.burgerConstructor.ingredients[0]).toEqual(mockIngredient2);
+    expect(state.burgerConstructor.ingredients[1]).toEqual(mockIngredient1);
+  });
+
+  test('Тестирование экшена перемещения ингредиента вниз', () => {
+    const initialStateWithIngredient = {
+      ...initialState,
+      burgerConstructor: {
+        ingredients: [mockIngredient1, mockIngredient2]
+      }
+    };
+
+    const action = burgerSlice.actions.moveDownIngredient(mockIngredient1.id);
+    const state = burgerSlice.reducer(initialStateWithIngredient, action);
+
+    expect(state.burgerConstructor.ingredients[0]).toEqual(mockIngredient2);
+    expect(state.burgerConstructor.ingredients[1]).toEqual(mockIngredient1);
+  });
+});
