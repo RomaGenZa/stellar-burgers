@@ -20,7 +20,7 @@ interface UserState {
 }
 
 const userString = localStorage.getItem('user');
-const initialState: UserState = {
+export const initialState: UserState = {
   isAuthenticating: false,
   user: userString ? JSON.parse(userString) : null,
   orders: [],
