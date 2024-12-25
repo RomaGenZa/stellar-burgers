@@ -1,10 +1,11 @@
 import {
   burgerSlice,
   fetchIngredients,
+  getOrderByNumber,
   initialState,
   orderBurger
 } from './burger-slice';
-import { TConstructorIngredient, TIngredient } from '@utils-types';
+import { TConstructorIngredient, TIngredient, TOrder } from '@utils-types';
 
 describe('Тестирование burgerSlice', () => {
   const mockIngredient1: TConstructorIngredient = {
@@ -20,6 +21,16 @@ describe('Тестирование burgerSlice', () => {
     name: 'Биокотлета из марсианской Магнолии',
     type: 'main'
   } as TConstructorIngredient;
+
+  const mockOrder: TOrder = {
+    _id: '67694f7b750864001d373bba',
+    ingredients: ['643d69a5c3f7b9001cfa093c', '643d69a5c3f7b9001cfa093c'],
+    status: 'done',
+    name: 'Краторный бургер',
+    createdAt: '2024-12-23T11:54:35.570Z',
+    updatedAt: '2024-12-23T11:54:36.526Z',
+    number: 63840
+  };
 
   test('Тестирование экшена добавления ингредиента', () => {
     const action = burgerSlice.actions.addIngredient(mockIngredient1);
@@ -141,5 +152,32 @@ describe('Тестирование burgerSlice', () => {
 
     expect(state.orderRequest).toBe(false);
     expect(state.ingredients).toEqual(ingredients);
+  });
+
+  test('Тестрование getOrderByNumber.pending', () => {
+    const action = { type: getOrderByNumber.pending.type };
+    const state = burgerSlice.reducer(initialState, action);
+
+    expect(state.orderRequest).toBe(true);
+    expect(state.orderModalData).toEqual(null);
+  });
+
+  test('Тестрование getOrderByNumber.fulfilled', () => {
+    const action = {
+      type: getOrderByNumber.fulfilled.type,
+      payload: { orders: [mockOrder] }
+    };
+
+    const state = burgerSlice.reducer(initialState, action);
+
+    expect(state.orderRequest).toBe(false);
+    expect(state.orderModalData).toEqual(mockOrder);
+  });
+
+  test('Тестрование getOrderByNumber.rejected', () => {
+    const action = { type: getOrderByNumber.rejected.type };
+    const state = burgerSlice.reducer(initialState, action);
+
+    expect(state.orderRequest).toBe(false);
   });
 });
