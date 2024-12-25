@@ -1,5 +1,10 @@
-import { burgerSlice, initialState } from './burger-slice';
-import { TConstructorIngredient } from '@utils-types';
+import {
+  burgerSlice,
+  fetchIngredients,
+  initialState,
+  orderBurger
+} from './burger-slice';
+import { TConstructorIngredient, TIngredient } from '@utils-types';
 
 describe('Тестирование burgerSlice', () => {
   const mockIngredient1: TConstructorIngredient = {
@@ -66,5 +71,75 @@ describe('Тестирование burgerSlice', () => {
 
     expect(state.burgerConstructor.ingredients[0]).toEqual(mockIngredient2);
     expect(state.burgerConstructor.ingredients[1]).toEqual(mockIngredient1);
+  });
+
+  test('Тестрование fetchIngredients.pending', () => {
+    const action = { type: fetchIngredients.pending.type };
+    const state = burgerSlice.reducer(initialState, action);
+
+    expect(state.isIngredientsLoading).toBe(true);
+    expect(state.ingredients).toEqual([]);
+  });
+
+  it('Тестрование fetchIngredients.fulfilled', () => {
+    const ingredients: TIngredient[] = [mockIngredient1, mockIngredient2];
+
+    const action = {
+      type: fetchIngredients.fulfilled.type,
+      payload: ingredients
+    };
+
+    const state = burgerSlice.reducer(initialState, action);
+
+    expect(state.isIngredientsLoading).toBe(false);
+    expect(state.ingredients).toEqual(ingredients);
+  });
+
+  it('Тестрование fetchIngredients.rejected', () => {
+    const action = { type: fetchIngredients.rejected.type };
+    const state = burgerSlice.reducer(initialState, action);
+
+    expect(state.isIngredientsLoading).toBe(false);
+    expect(state.ingredients).toEqual([]);
+  });
+
+  test('Тестрование orderBurger.pending', () => {
+    const ingredients = [mockIngredient1, mockIngredient2];
+    const ingredientsState = {
+      ...initialState,
+      ingredients: ingredients
+    };
+
+    const action = { type: orderBurger.pending.type };
+    const state = burgerSlice.reducer(ingredientsState, action);
+
+    expect(state.orderRequest).toBe(true);
+    expect(state.ingredients).toEqual(ingredients);
+  });
+
+  test('Тестрование orderBurger.fulfilled', () => {
+    const action = {
+      type: orderBurger.fulfilled.type,
+      payload: [mockIngredient1._id, mockIngredient2._id]
+    };
+
+    const state = burgerSlice.reducer(initialState, action);
+
+    expect(state.orderRequest).toBe(false);
+    expect(state.ingredients).toEqual([]);
+  });
+
+  test('Тестрование orderBurger.rejected', () => {
+    const ingredients = [mockIngredient1, mockIngredient2];
+    const ingredientsState = {
+      ...initialState,
+      ingredients: ingredients
+    };
+
+    const action = { type: orderBurger.rejected.type };
+    const state = burgerSlice.reducer(ingredientsState, action);
+
+    expect(state.orderRequest).toBe(false);
+    expect(state.ingredients).toEqual(ingredients);
   });
 });
