@@ -9,7 +9,7 @@ interface FeedState {
   totalToday: number;
 }
 
-const initialState: FeedState = {
+export const initialState: FeedState = {
   isLoading: false,
   orders: [],
   total: 0,
@@ -22,7 +22,7 @@ export const feedSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchFeed.pending, (state) => {
-      state.isLoading;
+      state.isLoading = true;
     });
     builder.addCase(fetchFeed.fulfilled, (state, action) => {
       state.isLoading = false;
